@@ -1,0 +1,16 @@
+https://github.com/prashantambedkar/gripper-aware-grasp-refinement_.git
+
+rm -r gripper-aware-grasp-refinement
+
+
+sudo rm -r gripper-aware-grasp-refinement
+
+rm -ri gripper-aware-grasp-refinement
+
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+chmod +x Miniconda3-latest-Linux-x86_64.sh
+./Miniconda3-latest-Linux-x86_64.sh
+source ~/miniconda3/bin/activate
+conda activate
+conda create -n myenv python=3.8
