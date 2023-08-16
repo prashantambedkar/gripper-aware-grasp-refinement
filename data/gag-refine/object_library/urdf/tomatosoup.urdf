@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="tomatosoup">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\tomatosoup_vhacd.obj"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.10" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\tomatosoup_vhacd.obj"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.10"/>
+			<inertia ixx="0.00040169030139809604" ixy="8.428495310229145e-07" ixz="-4.903009607767603e-06" iyy="0.00061557934807268455" iyz="-6.510019057102014e-06" izz="0.0009472921464050545" />
+			<origin xyz="-0.058858606476823362 0.086572962411367288 0.046898852033388383"/>
+		</inertial>
+	</link>
+</robot>

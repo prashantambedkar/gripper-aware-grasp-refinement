@@ -1,0 +1,55 @@
+method: conv_onet
+data:
+  input_type: pointcloud
+  classes: ['scenes']  # this is the only folder anyway
+  path: data/gag/  # on my external SSD, next sub-folder is 'scenes', which is the class
+  pointcloud_n: 10000
+  pointcloud_noise: 0.005  # it will be applied after scaling, i.e. it's not actual [m] but [m]/0.297
+  points_subsample: 2048
+  points_file: points_iou.npz
+  points_iou_file: points_iou.npz
+  pointcloud_file: pointcloud_4views.npz
+  pointcloud_chamfer_file: pointcloud_4views.npz
+  multi_files: null
+  voxels_file: null
+  padding: 0
+model:
+  encoder: pointnet_local_pool
+  encoder_kwargs:
+    hidden_dim: 32
+    plane_type: ['xz', 'xy', 'yz']
+    plane_resolution: 128
+    unet: True
+    unet_kwargs:
+      depth: 5
+      merge_mode: concat
+      start_filts: 32
+  decoder: simple_local
+  decoder_kwargs:
+    sample_mode: bilinear  # bilinear / nearest
+    hidden_size: 32
+  c_dim: 32
+training:
+  out_dir: out/gag_3plane_4views
+  batch_size: 24
+  model_selection_metric: iou
+  model_selection_mode: maximize
+  print_every: 100
+  visualize_every: 10000
+  validate_every: 10000
+  checkpoint_every: 10000
+  backup_every: 20000
+  n_workers: 8
+  n_workers_val: 4
+test:
+  threshold: 0.2
+  eval_mesh: true
+  eval_pointcloud: false
+  remove_wall: true
+  model_file: model_best.pt
+generation:
+  vis_n_outputs: 2
+  refine: false
+  n_x: 128
+  n_z: 1
+  generation_dir: generation

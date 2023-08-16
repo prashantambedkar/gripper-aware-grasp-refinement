@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="006_mustard_bottle">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\006_mustard_bottle_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\006_mustard_bottle_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.603"/>
+			<inertia ixx="0.0014655662745235458" ixy="7.584859921874867e-05" ixz="-4.974190627016529e-06" iyy="0.001612936053729518" iyz="-7.048894109856973e-06" izz="0.00042300999212817065" />
+			<origin xyz="-0.015054331433700373 -0.023109376171934596 0.07504227116762216"/>
+		</inertial>
+	</link>
+</robot>

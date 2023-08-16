@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="005_tomato_soup_can">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\005_tomato_soup_can_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\005_tomato_soup_can_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.349"/>
+			<inertia ixx="0.00034992650317657416" ixy="-1.4603114088284507e-07" ixz="-8.096152704860432e-07" iyy="0.0003526716878464613" iyz="3.544636530596982e-07" izz="0.00019183671267576996" />
+			<origin xyz="-0.00934209933207733 0.0842242443703225 0.050025832912501206"/>
+		</inertial>
+	</link>
+</robot>

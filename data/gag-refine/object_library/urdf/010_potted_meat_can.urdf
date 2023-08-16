@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="010_potted_meat_can">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\010_potted_meat_can_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\010_potted_meat_can_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.37"/>
+			<inertia ixx="0.0002609938486394708" ixy="-1.0300680530897149e-05" ixz="-5.745642722761419e-07" iyy="0.0004473677552775692" iyz="1.160909265241449e-06" izz="0.00033728303942858975" />
+			<origin xyz="-0.0328403521878015 -0.026352714386245372 0.037830850023320484"/>
+		</inertial>
+	</link>
+</robot>

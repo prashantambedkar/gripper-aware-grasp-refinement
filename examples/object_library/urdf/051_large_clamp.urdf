@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="051_large_clamp">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\051_large_clamp_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\051_large_clamp_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.125"/>
+			<inertia ixx="0.00019683670361204445" ixy="1.5407917464801627e-05" ixz="9.783545404394075e-06" iyy="0.00011060134156598956" iyz="-9.79101335641278e-06" izz="0.00028844939601873286" />
+			<origin xyz="-0.002385306165377731 -0.02157180480868805 0.017436900334307823"/>
+		</inertial>
+	</link>
+</robot>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="003_cracker_box">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\003_cracker_box_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\003_cracker_box_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.411"/>
+			<inertia ixx="0.0023954891532557312" ixy="-4.994691220372142e-07" ixz="1.5286675585697854e-05" iyy="0.0016821716659656807" iyz="5.453591866462642e-06" izz="0.0009995042789259743" />
+			<origin xyz="-0.014853557796427268 -0.014205054477502178 0.1022048683926028"/>
+		</inertial>
+	</link>
+</robot>

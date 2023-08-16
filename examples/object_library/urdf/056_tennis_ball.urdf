@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="056_tennis_ball">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\056_tennis_ball_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\056_tennis_ball_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.058"/>
+			<inertia ixx="2.5858427934342315e-05" ixy="1.8978445897666706e-10" ixz="-5.62637110521303e-08" iyy="2.5846273533099003e-05" iyz="-2.6147520879761492e-08" izz="2.5918705020892146e-05" />
+			<origin xyz="0.008233239742634915 -0.04419242635623044 0.032886620589233584"/>
+		</inertial>
+	</link>
+</robot>

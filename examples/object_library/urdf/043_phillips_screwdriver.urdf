@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="043_phillips_screwdriver">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\043_phillips_screwdriver_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\043_phillips_screwdriver_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0"/>
+			<inertia ixx="0.0" ixy="-0.0" ixz="-0.0" iyy="0.0" iyz="-0.0" izz="0.0" />
+			<origin xyz="0.0026626281142232734 0.022223869512510406 0.016372275541700333"/>
+		</inertial>
+	</link>
+</robot>

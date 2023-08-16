@@ -1,0 +1,81 @@
+---
+yaml_file_type: "ObjectLibrary"
+yaml_file_version: "1.0"
+name: "Example Library"
+description: "This is a library of two YCB objects as example."
+objects:
+  -
+    identifier: 025_mug
+    name: mug
+    thumbnail_fn: null
+    mesh_fn: meshes/025_mug/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.118
+    friction_coeff: null
+  -
+    identifier: 051_large_clamp
+    name: large clamp
+    thumbnail_fn: null
+    mesh_fn: meshes/051_large_clamp/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.125
+    friction_coeff: null
+#  -
+#    identifier: 005_tomato_soup_can
+#    name: mug
+#    thumbnail_fn: null
+#    mesh_fn: meshes/005_tomato_soup_can/google_16k/textured.obj
+#    vhacd_fn: null
+#    urdf_fn: null
+#    mass: 0.118
+#    friction_coeff: null
+  -
+    identifier: 016_pear
+    name: mug
+    thumbnail_fn: null
+    mesh_fn: meshes/016_pear/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.118
+    friction_coeff: null
+  -
+    identifier: 011_banana
+    name: mug
+    thumbnail_fn: null
+    mesh_fn: meshes/011_banana_google_16k/011_banana/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.12
+    friction_coeff: null
+  -
+    identifier: 017_orange
+    name: mug
+    thumbnail_fn: null
+    mesh_fn: meshes/017_orange_google_16k/017_orange/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.12
+    friction_coeff: null
+  -
+    identifier: 077_rubiks_cube
+    name: mug
+    thumbnail_fn: null
+    mesh_fn: meshes/077_rubiks_cube_google_16k/077_rubiks_cube/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.12
+    friction_coeff: null
+  -
+    identifier: 072-a_toy_airplane
+    name: mug
+    thumbnail_fn: null
+    mesh_fn: meshes/072-a_toy_airplane_google_16k/072-a_toy_airplane/google_16k/textured.obj
+    vhacd_fn: null
+    urdf_fn: null
+    mass: 0.12
+    friction_coeff: null
+
+
+

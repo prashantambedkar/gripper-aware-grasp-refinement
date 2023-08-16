@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="044_flat_screwdriver">
+	<link name="base">
+		<collision>
+			<geometry>
+				<mesh filename="..\vhacd\044_flat_screwdriver_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+			<contact_coefficients mu="0.24" />
+		</collision>
+		<visual>
+			<geometry>
+				<mesh filename="..\vhacd\044_flat_screwdriver_vhacd.obj" scale="1.0 1.0 1.0"/>
+			</geometry>
+			<origin xyz="0 0 0"/>
+		</visual>
+		<inertial>
+			<mass value="0.0984"/>
+			<inertia ixx="7.077716222518674e-05" ixy="6.185559374299765e-05" ixz="-3.4193857986303007e-06" iyy="7.535744245485797e-05" iyz="3.3082297869447685e-06" izz="0.00013480575673416472" />
+			<origin xyz="0.02322835134821299 -0.02270556061739027 0.01617982169382291"/>
+		</inertial>
+	</link>
+</robot>

@@ -1,0 +1,36 @@
+data:
+  path: data/gag/gripper_point_clouds/Franka
+  n_joints: 1
+  n_contacts: 2
+decoder:
+  model: simple_decoder  # simple_decoder | latent_decoder | latent_skip
+  simple_decoder_kwargs:
+    n_points: 2048
+    layers: [256, 512]  # currently only two layers supported
+  latent_decoder_kwargs:
+    n_points: 2048
+    layers: [ 256, 512 ]  # currently only two layers supported
+    n_latent: 8
+  latent_skip_kwargs:
+    n_points: 2048
+    layers: [ 256, 512 ]  # currently only two layers supported
+    n_latent: 16
+training:
+  out_dir: out/gripper/Franka_simple_decoder_with_contacts
+  loss_fn: earth_mover_distance  # chamfer_distance | earth_mover_distance
+  batch_size: 1
+  point_cloud_noise: 0.0005  # std_dev of gaussian noise applied to annotated points in training
+  epochs: 100
+  validate_every: 20
+  optimizer:
+    method: adam  # adam | sgd
+    adam_kwargs:
+      lr: 0.001
+      weight_decay: 0.0001
+    sgd_kwargs:
+      lr: 0.001
+  use_lr_scheduler: True
+  lr_scheduler_kwargs:
+    step_size: 20
+    gamma: 0.1
+

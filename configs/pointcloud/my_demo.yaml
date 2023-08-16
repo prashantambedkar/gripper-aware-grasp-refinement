@@ -1,0 +1,17 @@
+inherit_from: configs/pointcloud/room_combine.yaml
+data:
+  input_type: pointcloud
+  classes: ['']
+  path: data/demo/synthetic_room_dataset2
+  pointcloud_n: 10000
+  pointcloud_file: pointcloud
+  voxels_file: null
+  points_file: null
+  points_iou_file: null
+  multi_files: 1
+training:
+  out_dir: out/demo_syn_room2
+test:
+  model_file: https://s3.eu-central-1.amazonaws.com/avg-projects/convolutional_occupancy_networks/models/pointcloud/room_combine.pt
+generation:
+  generation_dir: generation
