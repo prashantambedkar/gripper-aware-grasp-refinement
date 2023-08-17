@@ -3,6 +3,7 @@ import os
 import numpy as np
 import trimesh
 import burg_toolkit as burg
+import matplotlib.pyplot as plt
 
 from . import get_scenes_from_split
 from .occupancy import sample_points, get_occupancy_map
@@ -10,7 +11,7 @@ from .sdf import compute_sdf_values
 
 
 def create_full_point_cloud_data(base_dir, object_library, splits=None, ground_factor=0.2, n_points=100000,
-                                 with_semantics=False, with_ply=True):
+                                 with_semantics=False, with_ply=False):
     """
     This method will open the existing scenes in the dataset and will sample point clouds from the object surfaces.
     It assumes a directory that contains a train.lst/test.lst (or other specified splits) and will read the subfolders
@@ -44,10 +45,13 @@ def create_full_point_cloud_data(base_dir, object_library, splits=None, ground_f
         all_scenes = get_scenes_from_split(base_dir, split)
         for scene_dir_id in all_scenes:
             scene_dir = os.path.join(base_dir, scene_dir_id)
-            print('scene_dir:',scene_dir)
             scene, _, _ = burg.Scene.from_yaml(os.path.join(scene_dir, 'scene.yaml'), object_library)
 
-            meshes = scene.get_mesh_list(with_plane=False, with_bg_objects=False, as_trimesh=True)
+            # if directly loaded as trimesh, sometimes we get trimesh.Scene instead of trimesh.Trimesh
+            # hence use as_trimesh() to ensure we have a single trimesh.Trimesh
+            meshes = [burg.mesh_processing.as_trimesh(m) for m in
+                      scene.get_mesh_list(with_plane=False, with_bg_objects=False, as_trimesh=False)]
+
             # determine how many points to sample by surface area of meshes
             ratios = np.zeros(len(meshes)+1)
             ratios[0] = scene.ground_area[0] * scene.ground_area[1] * ground_factor
@@ -96,13 +100,16 @@ def create_full_point_cloud_data(base_dir, object_library, splits=None, ground_f
 
 
 def create_annotated_query_points(base_dir, object_library, splits=None, with_sdf=True, n_points_whole_scene=100000,
-                                  n_points_per_object_bb=0, with_semantics=False, ground_plane=False):
+                                  n_points_per_object_bb=0, with_semantics=False, ground_plane=False,
+                                  n_from_point_cloud=0, from_point_cloud_noise=0.02):
     """
     Creates the query points and their occupancy/sdf annotations. Assumes that base_dir contains the split.lst files
     and each subfolder contains a scene.yaml that can be opened with the given object_library. The subfolder also
     must contain a full_point_cloud.npz file, which can be created using `create_full_point_cloud_data()` method.
     This will create a file points_iou.npz in the subdirectories, which contains points, occupancies, and optionally
     semantics and sdf.
+    It can also utilise the point cloud to sample query points from there and apply a Gaussian noise to those points.
+    The point cloud is assumed to be in full_point_cloud.npz.
 
     Args:
         base_dir: Base directory that contains the split.lst files
@@ -112,8 +119,9 @@ def create_annotated_query_points(base_dir, object_library, splits=None, with_sd
         n_points_whole_scene: number of points to sample for the whole scene
         n_points_per_object_bb: number of additional points to sample in the bounding box of each object, e.g. 30k
         with_semantics: whether to save semantic information as well, i.e. an object id
-        ground_plane: whether the scene has a ground plane at z=0 (important for correct calculation of SDF)
-
+        ground_plane: whether the scene has a ground plane at z=0
+        n_from_point_cloud: number of points to sample from the object/scene point cloud.
+        from_point_cloud_noise: standard deviation of gaussian noise to apply to the points.
     Returns:
         Nothing
     """
@@ -144,7 +152,8 @@ def create_annotated_query_points(base_dir, object_library, splits=None, with_sd
             lower_bounds = [-scene_padding]*3
             upper_bounds = [scene_edge_len + scene_padding]*3
             points = sample_points(n_points_whole_scene, lower_bounds, upper_bounds)
-            occupancy_map = get_occupancy_map(points, scene)
+
+            occupancy_map = get_occupancy_map(points, scene, check_z=ground_plane)
             all_points.append(points)
             all_occupancy_maps.append(occupancy_map)
 
@@ -153,11 +162,41 @@ def create_annotated_query_points(base_dir, object_library, splits=None, with_sd
                 for obj_instance in scene.objects:
                     # get bounding box and sample points within
                     mesh = obj_instance.get_mesh()
+                    # apply some padding around the object
                     lower_bounds = mesh.get_min_bound() - object_padding
                     upper_bounds = mesh.get_max_bound() + object_padding
+                    # adjust to ensure everything is within scene bounds
+                    lower_bounds = np.maximum(lower_bounds, -scene_padding)
+                    upper_bounds = np.minimum(upper_bounds, scene_edge_len + scene_padding)
+                    # sample
                     points = sample_points(n_points_per_object_bb, lower_bounds, upper_bounds)
-                    points = points[points[:, 2] > -scene_padding]  # filter out those that are too low in z
-                    occupancy_map = get_occupancy_map(points, scene)
+
+                    occupancy_map = get_occupancy_map(points, scene, check_z=ground_plane)
+                    all_points.append(points)
+                    all_occupancy_maps.append(occupancy_map)
+
+            # 3rd step: sample very specifically using the noisy point cloud points as query points
+            if n_from_point_cloud is not None and n_from_point_cloud > 0:
+                pointcloud_file = os.path.join(scene_dir, 'full_point_cloud.npz')
+                if not os.path.isfile(pointcloud_file):
+                    print(f'point cloud file not found. looked here: {pointcloud_file}')
+                    print(f'skipping point cloud points for scene {scene_dir_id}')
+                else:
+                    # load point cloud
+                    pointcloud_data = dict(np.load(pointcloud_file))
+                    points = pointcloud_data['points']
+                    # apply random noise to the points
+                    points += np.random.normal(scale=from_point_cloud_noise, size=points.shape)
+                    # remove those points which are out of bounds
+                    mask = (points >= -scene_padding) & (points <= scene_edge_len + scene_padding)
+                    mask = mask.all(axis=-1)
+                    points = points[mask]
+                    # sample
+                    replace = len(points) < n_from_point_cloud  # if that's the case, we allow double-selection
+                    select_indices = np.random.choice(np.arange(len(points)), size=n_from_point_cloud, replace=replace)
+                    points = points[select_indices]
+
+                    occupancy_map = get_occupancy_map(points, scene, check_z=ground_plane)
                     all_points.append(points)
                     all_occupancy_maps.append(occupancy_map)
 
@@ -188,3 +227,72 @@ def create_annotated_query_points(base_dir, object_library, splits=None, with_sd
 
             np.savez(os.path.join(scene_dir, 'points_iou.npz'), **out_dict)
             print(f'saved annotations for {split}-{scene_dir_id}')
+
+
+def inspect_scene_annotations(base_dir, object_library, scene_name):
+    """
+    visualises the scene, point cloud, and occupancy points (if available)
+    """
+    scene_dir = os.path.join(base_dir, scene_name)
+
+    print(f'inspecting scene {scene_name} from directory: {scene_dir}')
+    scene, _, _ = burg.Scene.from_yaml(os.path.join(scene_dir, 'scene.yaml'), object_library)
+    print(f'scene.yaml loaded.')
+    print(scene)
+
+    objects_to_visualise = [scene]
+
+    pointcloud_file = os.path.join(scene_dir, 'full_point_cloud.npz')
+    if not os.path.isfile(pointcloud_file):
+        print(f'point cloud file not found. looked here: {pointcloud_file}')
+    else:
+        pointcloud_data = dict(np.load(pointcloud_file))
+        print(f'point cloud file found. has fields: {[key for key in pointcloud_data.keys()]}')
+        objects_to_visualise.append(pointcloud_data['points'])
+
+    occupancy_file = os.path.join(scene_dir, 'points_iou.npz')
+    if not os.path.isfile(occupancy_file):
+        print(f'annotation file not found. looked here: {occupancy_file}')
+    else:
+        occupancy_data = dict(np.load(occupancy_file))
+        print(f'annotation file found. has fields: {[key for key in occupancy_data.keys()]}')
+        occ_labels = np.unpackbits(occupancy_data['occupancies']).astype(bool)
+        occ_points = [occupancy_data['points'][occ_labels], occupancy_data['points'][~occ_labels]]
+        print(f'{len(occ_points[0])} occupied; {len(occ_points[1])} unoccupied')
+        objects_to_visualise.extend(occ_points)
+
+    burg.visualization.show_geometries(objects_to_visualise)
+
+
+def print_occupancy_summary(base_dir, splits=None):
+    print(f'occupancy summary for dataset in {base_dir}')
+    if splits is None:
+        splits = ['train', 'test']
+        print(f'given split was None, assuming the following splits: {splits}')
+
+    for split in splits:
+        all_scenes = get_scenes_from_split(base_dir, split)
+        all_occupied = []
+        all_unoccupied = []
+        lower_threshold = 2048
+        n_below_thresh = 0
+        for scene_dir_id in all_scenes:
+            scene_dir = os.path.join(base_dir, scene_dir_id)
+            occupancy_file = os.path.join(scene_dir, 'points_iou.npz')
+            if not os.path.isfile(occupancy_file):
+                print(f'annotation file not found. looked here: {occupancy_file}')
+            else:
+                occupancy_data = dict(np.load(occupancy_file))
+                occ_labels = np.unpackbits(occupancy_data['occupancies']).astype(bool)
+                occupied, unoccupied = occupancy_data['points'][occ_labels], occupancy_data['points'][~occ_labels]
+                if len(occupied) <= lower_threshold:
+                    print(f'{split}-{scene_dir_id} has only {len(occupied)} occupied points')
+                    n_below_thresh += 1
+                all_occupied.append(len(occupied))
+                all_unoccupied.append(len(unoccupied))
+
+        print(f'found a total of {n_below_thresh} shapes with low occupancy data')
+        plt.hist(all_occupied, bins='auto')
+        plt.title(f'Number of occupied points for all shapes in {split} split')
+        plt.show()
+

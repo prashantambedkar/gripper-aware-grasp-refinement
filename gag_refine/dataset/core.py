@@ -44,7 +44,7 @@ def load_object_library(dataset_dir, split=None):
         burg.ObjectLibrary
     """
     assert split in ['train', 'test', None]
-    print(dataset_dir)
+
     object_library_fn = os.path.join(dataset_dir, 'object_library/object_library.yaml')
     if not os.path.exists(object_library_fn):
         raise FileNotFoundError(f'requested to load object library from {object_library_fn} but the file could not '

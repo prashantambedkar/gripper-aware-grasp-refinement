@@ -2,7 +2,7 @@ method: conv_sdfnet
 data:
   input_type: pointcloud
   classes: ['scenes']  # this is the only folder anyway
-  path: data/gag-refine/  # next sub-folder is 'scenes', which is the class
+  path: data/shapenet_core_v2/  # next sub-folder is 'scenes', which is the class
   pointcloud_n: 10000
   pointcloud_noise: 0.0005  # it will be applied after scaling, i.e. it's not actual [m] but [m]/0.297
   points_subsample: [1024, 1024]  # will balance points within and outside the volumes (out, in)
@@ -24,13 +24,14 @@ model:
   encoder: pointnet_local_pool
   encoder_kwargs:
     hidden_dim: 32
-    plane_type: ['xz', 'xy', 'yz']
-    plane_resolution: 128
-    unet: True
-    unet_kwargs:
-      depth: 5
-      merge_mode: concat
-      start_filts: 32
+    plane_type: 'grid'
+    grid_resolution: 64
+    unet3d: True
+    unet3d_kwargs:
+      num_levels: 4
+      f_maps: 32
+      in_channels: 32
+      out_channels: 32
   decoder: simple_local
   decoder_kwargs:
     sample_mode: bilinear  # bilinear / nearest
@@ -43,15 +44,17 @@ model:
     n_blocks: 5
     pooling: max  # max | avg
 training:
-  out_dir: out/gag_3plane_fullpc_sdf
-  batch_size: 20
+  out_dir: out/shapenetv2_grid64_fullpc_sdf_bs32_lrsched
+  batch_size: 32
+  lr_sched: true
+  epochs: 500
   model_selection_metric: sdf_iou  # todo: should we use sth else here, which also takes into account grasps?
   model_selection_mode: maximize
-  print_every: 5
-  visualize_every: 50
-  validate_every: 1000
-  checkpoint_every: 1000
-  backup_every: 20000
+  print_every: 10
+  visualize_every: 10
+  validate_every: 1
+  checkpoint_every: 1
+  backup_every: 20
   n_workers: 8
   n_workers_val: 4
 test:

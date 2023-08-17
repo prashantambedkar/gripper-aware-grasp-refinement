@@ -151,7 +151,6 @@ class Shapes3dDataset(data.Dataset):
         
         for field_name, field in self.fields.items():
             try:
-                print(f'attempting to load field {field_name}, {type(field)}, idx {idx}')
                 field_data = field.load(model_path, idx, info)
             except Exception:
                 if self.no_except:

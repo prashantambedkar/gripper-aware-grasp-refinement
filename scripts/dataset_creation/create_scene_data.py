@@ -30,11 +30,8 @@ def create_scenes(n_scenes, n_objects, area, base_dir, split, start_idx=0, idx_o
     :param idx_offset: if you want to add an arbitrary number to offset the output scene indices
     :return: nothing, saves the scenes to files
     """
-
     n_scenes = np.array(n_scenes)
-    print('n_scenes: ', n_scenes)
     n_objects = np.array(n_objects)
-    print('n_objects: ', n_objects)
     assert n_scenes.ndim == n_objects.ndim
     if n_scenes.ndim == 0:
         n_scenes = np.array([n_scenes])
@@ -51,22 +48,16 @@ def create_scenes(n_scenes, n_objects, area, base_dir, split, start_idx=0, idx_o
         n_scenes[i] = 0
         i += 1
     # now only correct the amount of the remaining one
-    print('skipped: ', skipped)
-    print('start_idx: ', start_idx)
     n_scenes[i] -= (start_idx - skipped)
-    print('n_scenes[i]:',n_scenes[i])
     scene_fn_idx = start_idx + idx_offset
-    print('scene_fn_idx',scene_fn_idx)
+
     object_library = load_object_library(os.path.join(base_dir, '..'), split)
     for n_s, n_o in zip(n_scenes, n_objects):
-        print('n_s:',n_s)
-        print('n_o:',n_o)
         for i in range(n_s):
             while True:
                 # sample_scene might return scene with fewer objects if not all of them could be placed, just repeat
                 scene = burg.sampling.sample_scene(object_library, ground_area=area, instances_per_scene=n_o,
                                                    instances_per_object=1)
-                print('len(scene.objects):',len(scene.objects))
                 if len(scene.objects) == n_o:
                     scene_dir = os.path.join(base_dir, f'{scene_fn_idx:04d}')
                     burg.io.make_sure_directory_exists(scene_dir)
@@ -94,15 +85,10 @@ def create_scene_data(base_dir, n_objects, n_scenes_train, n_scenes_test):
     # make scenes fit on A3 paper
     # make them square, so that all the feature planes of ConvONet are be same size
     scene_edge_len = 0.297
-    print('Training Dataset:')
-    print('n_scenes_train:',n_scenes_train)
-    print('n_objects:', n_objects)
+
     create_scenes(n_scenes=n_scenes_train, n_objects=n_objects, area=(scene_edge_len, scene_edge_len),
                   base_dir=base_dir, split='train', start_idx=0)
-    print('Testing Dataset:')
-    print('n_scenes_test', n_scenes_test)
-    print('n_objects', n_objects)
-    print('idx_offset:',np.sum(n_scenes_train))
+
     create_scenes(n_scenes=n_scenes_test, n_objects=n_objects, area=(scene_edge_len, scene_edge_len),
                   base_dir=base_dir, split='test', idx_offset=np.sum(n_scenes_train))
 
@@ -143,15 +129,9 @@ def create_partial_point_cloud_data(base_dir):
         all_scenes = get_scenes_from_split(base_dir, split)
         for scene_dir_id in all_scenes:
             scene_dir = os.path.join(base_dir, scene_dir_id)
-            stpath=scene_dir+'/scene.yaml'
-            print('scene_dir:',scene_dir)
-            print('newpath:',os.path.join(scene_dir, 'scene.yaml'))
-            print('pthhh:',stpath)
-            print('lib:',lib)
-            # scene, _, _ = burg.Scene.from_yaml(os.path.join(scene_dir, 'scene.yaml'), lib)
-            scene, _, _ = burg.Scene.from_yaml(scene_dir+'/scene.yaml', lib)
+            scene, _, _ = burg.Scene.from_yaml(os.path.join(scene_dir, 'scene.yaml'), lib)
             render_engine.setup_scene(scene, camera, with_plane=True)
-            print('RenderEngine')
+
             # there is no randomness in the view point - the focus point is always the same. perhaps augment?
             w_x, w_y = scene.ground_area
             pose_generator = burg.render.CameraPoseGenerator(
@@ -210,8 +190,7 @@ def show_scene(base_dir, scene_id=0, split='train'):
     # show the scene from BURG toolkit
     # show the point clouds
     # show the occupancy points
-    print('base_dir:',base_dir)
-    print('lib:',os.path.join(base_dir, '..'))
+
     lib = load_object_library(os.path.join(base_dir, '..'), split)
     scene_dir = os.path.join(base_dir, f'{scene_id:04d}')
     scene, _, _ = burg.Scene.from_yaml(os.path.join(scene_dir, 'scene.yaml'), lib)
@@ -220,7 +199,7 @@ def show_scene(base_dir, scene_id=0, split='train'):
     occ_labels = np.unpackbits(occupancy_data['occupancies']).astype(bool)
     occ_points = [occupancy_data['points'][occ_labels], occupancy_data['points'][~occ_labels]]
 
-    pc_4views = dict(np.load(os.path.join(scene_dir, 'pointcloud_4views.npz')))['points']
+    # pc_4views = dict(np.load(os.path.join(scene_dir, 'pointcloud_4views.npz')))['points']
 
     burg.visualization.show_geometries([scene, *occ_points])
     print('all stuff drawn')
@@ -229,31 +208,23 @@ def show_scene(base_dir, scene_id=0, split='train'):
 def main():
     base_dir = '/home/rudorfem/datasets/gag/scenes/'
     base_dir = '/home/martin/dev/gripper-aware-grasp-refinement/data/gag/scenes/'
-    base_dir = '../../data/gag-refine/scenes/'
-    #base_dir = '../../data/gag-refine/NewScenes/'
+    base_dir = 'drive/MyDrive/dev/gripper-aware-grasp-refinement/data/gag-refine/scenes/'
 
-
-    n_objects = [3, 4, 5, 6]
-    #n_scenes_train = [200, 200, 200]
-    n_scenes_train = [55, 55, 55, 55]#220
-    #n_scenes_test = [20, 20, 20]
-    n_scenes_test = [10, 10, 10, 10]#40
-
-    #create_scene_data(base_dir, n_objects, n_scenes_train, n_scenes_test)
-    #print('Create Scene Done')
+    n_objects = [3, 4, 5]
+    n_scenes_train = [200, 200, 200]
+    n_scenes_train = [20, 20, 10]
+    n_scenes_test = [20, 20, 20]
+    n_scenes_test = [2, 2, 1]
+    # create_scene_data(base_dir, n_objects, n_scenes_train, n_scenes_test)
 
     lib = load_object_library(os.path.join(base_dir, '..'))
+    create_full_point_cloud_data(base_dir, lib)
+    create_annotated_query_points(base_dir, lib, with_sdf=True, n_points_whole_scene=100000,
+                                  n_points_per_object_bb=30000, ground_plane=True)
+    # create_partial_point_cloud_data(base_dir)
 
-    # create_full_point_cloud_data(base_dir, lib)
-    # print('created full point cloud data')
-
-    create_partial_point_cloud_data(base_dir)
-    print('created partial point cloud data')
-    create_annotated_query_points(base_dir, lib, with_sdf=True, n_points_whole_scene=100000, n_points_per_object_bb=30000, ground_plane=True)
-
-
-    #burg.visualization.configure_visualizer_mode(burg.visualization.VisualizerMode.IPYNB_VIEWER)
-    #show_scene(base_dir)
+    # burg.visualization.configure_visualizer_mode(burg.visualization.VisualizerMode.IPYNB_VIEWER)
+    show_scene(base_dir)
 
 
 if __name__ == '__main__':

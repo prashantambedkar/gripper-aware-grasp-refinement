@@ -184,18 +184,13 @@ class PointsSDFField(Field):
             idx (int): ID of data point
             category (int): index of category
         '''
-        # if self.multi_files is None:
-        file_path = os.path.join(model_path, self.file_name)
-        # else:
-        #     num = np.random.randint(self.multi_files)
-        #     file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
-        print(f'multi files is: {self.multi_files}')
-        print(f'loading from file path: {file_path}')
-        points_dict = np.load(file_path)
-        print(f'loaded dict with keys: {list(points_dict.keys())}')
-        for key, val in points_dict.items():
-            print(f'{key}: {type(val)}, {val.shape}')
+        if self.multi_files is None:
+            file_path = os.path.join(model_path, self.file_name)
+        else:
+            num = np.random.randint(self.multi_files)
+            file_path = os.path.join(model_path, self.file_name, '%s_%02d.npz' % (self.file_name, num))
 
+        points_dict = np.load(file_path)
         points = points_dict['points']
         # Break symmetry if given in float16:
         if points.dtype == np.float16:

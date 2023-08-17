@@ -1,4 +1,5 @@
 import numpy as np
+from burg_toolkit.mesh_processing import as_trimesh
 from convonets.src.utils.libmesh.inside_mesh import check_mesh_contains as mesh_contains
 
 
@@ -22,7 +23,7 @@ def get_occupancy_map(points, scene, check_z=True):
 
     # todo: potential speed up by not checking occupied points again (it is already quite fast though)
     for i, obj_instance in enumerate(scene.objects):
-        mesh = obj_instance.get_trimesh()
+        mesh = as_trimesh(obj_instance.get_mesh())
         collision_map[mesh_contains(mesh, points)] = i+1
 
     return collision_map

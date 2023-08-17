@@ -95,8 +95,8 @@ class SubsamplePoints(object):
 
             replace_out = np.count_nonzero(out_mask) < Nt_out
             replace_in = np.count_nonzero(in_mask) < Nt_in
-            if replace_in or replace_out:
-                logger.warning(f'oversampling minority class.')
+            # if replace_in or replace_out:
+            #     logger.warning(f'oversampling minority class.')
 
             idx_out = np.random.choice(np.count_nonzero(out_mask), size=Nt_out, replace=replace_out)
             idx_in = np.random.choice(np.count_nonzero(in_mask), size=Nt_in, replace=replace_in)
