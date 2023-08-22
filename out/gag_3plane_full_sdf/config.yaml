@@ -1,25 +1,8 @@
 method: conv_sdfnet
 data:
   input_type: pointcloud
-  classes: ['0000','0001','0002',
-  '0003','0004','0005',
-  '0006','0007','0008',
-  '0009','0010','0011',
-  '0012','0013','0014',
-  '0015','0016','0017',
-  '0018','0019','0020',
-  '0021','0022','0023',
-  '0024','0025','0026',
-  '0027','0028','0029',
-  '0030','0031','0032',
-  '0033','0034','0035',
-  '0036','0037','0038',
-  '0039','0040','0041',
-  '0042','0043','0044',
-  '0045','0046','0047',
-  '0048','0049','0050',
-  ]  # this is the only folder anyway
-  path: data/gag-refine/scenes/  # next sub-folder is 'scenes', which is the class
+  classes: ['scenes']  # this is the only folder anyway
+  path: data/gag-refine/   # next sub-folder is 'scenes', which is the class
   pointcloud_n: 10000
   pointcloud_noise: 0.0005  # it will be applied after scaling, i.e. it's not actual [m] but [m]/0.297
   points_subsample: [1024, 1024]  # will balance points within and outside the volumes (out, in)
@@ -61,14 +44,16 @@ model:
     pooling: max  # max | avg
 training:
   out_dir: out/gag_3plane_full_sdf
-  batch_size: 20
+  batch_size: 16
+  lr_sched: true
+  epochs: 500
   model_selection_metric: sdf_iou  # todo: should we use sth else here, which also takes into account grasps?
   model_selection_mode: maximize
-  print_every: 5
-  visualize_every: 50
-  validate_every: 1000
-  checkpoint_every: 1000
-  backup_every: 20000
+  print_every: 10
+  visualize_every: 10
+  validate_every: 1
+  checkpoint_every: 1
+  backup_every: 20
   n_workers: 8
   n_workers_val: 4
 test:
