@@ -33,3 +33,25 @@ pip install -e .
 
 This will also install the BURG Toolkit, which is required for dataset creation.
 And perhaps later on for some visualisations.
+
+
+Configuration on server end
+```
+conda create -n gag python=3.10
+conda activate gag
+conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+conda config --append channels conda-forge
+conda install cython pandas pyembree
+
+pip install https://github.com/mrudorfer/burg-toolkit/archive/refs/heads/dev.zip
+pip install pykdtree plyfile tensorboardX gdown wandb
+pip install torch-scatter -f https://data.pyg.org/whl/torch-2.0.1+cu117.html
+
+python setup.py build_ext --inplace
+pip install -e .
+```
+I highly recommend using wandb for logging your runs. Create a wandb account, create a project there and put your API key to following command:
+```https://wandb.ai/home```
+```
+wandb login
+```
