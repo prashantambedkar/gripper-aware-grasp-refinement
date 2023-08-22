@@ -43,7 +43,7 @@ model:
     n_blocks: 5
     pooling: max  # max | avg
 training:
-  out_dir: out/gag_3plane_fullpc_sdf
+  out_dir: out/gag_3plane_full_sdf
   batch_size: 16
   lr_sched: true
   epochs: 500
