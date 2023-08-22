@@ -57,8 +57,7 @@ class PatchPointsField(Field):
             idx (int): ID of data point
             vol (dict): precomputed volume info
         '''
-        # if self.multi_files is None:
-        if True:
+        if self.multi_files is None:
             file_path = os.path.join(model_path, self.file_name)
         else:
             num = np.random.randint(self.multi_files)
@@ -185,7 +184,8 @@ class PointsSDFField(Field):
             idx (int): ID of data point
             category (int): index of category
         '''
-        if self.multi_files is None:
+        # if self.multi_files is None:
+        if True:
             file_path = os.path.join(model_path, self.file_name)
         else:
             num = np.random.randint(self.multi_files)
