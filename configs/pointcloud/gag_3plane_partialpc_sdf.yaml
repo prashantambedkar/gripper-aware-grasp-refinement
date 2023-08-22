@@ -43,7 +43,7 @@ model:
     n_blocks: 5
     pooling: max  # max | avg
 training:
-  out_dir: out/gag_3plane_fullpc_sdf
+  out_dir: out/gag_3plane_partialpc_sdf
   batch_size: 20
   model_selection_metric: sdf_iou  # todo: should we use sth else here, which also takes into account grasps?
   model_selection_mode: maximize
