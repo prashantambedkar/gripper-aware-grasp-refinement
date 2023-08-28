@@ -12,7 +12,6 @@ from convonets.src.utils.io import export_pointcloud
 from convonets.src.utils.visualize import visualize_data
 from convonets.src.utils.voxels import VoxelGrid
 
-
 parser = argparse.ArgumentParser(
     description='Extract meshes from occupancy process.'
 )
