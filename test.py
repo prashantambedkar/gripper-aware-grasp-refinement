@@ -1,16 +1,16 @@
 import os
+import numpy as np
 import open3d as o3d
+from gag_refine.dataset import load_object_library
 import burg_toolkit as burg
-#burg.visualization.configure_visualizer_mode(burg.visualization.VisualizerMode.IPYNB_VIEWER)
+burg.visualization.configure_visualizer_mode(burg.visualization.VisualizerMode.IPYNB_VIEWER)
 
-scene_idx = '0249'  # choose one from [0050, 0051, 0052, 0053, 0054]
-out_path = 'out/gag_3grid_fullpc_sdf/generation/'
+DATA_DIR = 'data/gag-refine/scenes/'
+lib = load_object_library(os.path.join(DATA_DIR, '..'))
+print(f'loaded object library with {len(lib)} objects')
 
-ply_input = os.path.join(out_path, f'input/scenes/{scene_idx}.ply')
-off_output = os.path.join(out_path, f'meshes/scenes/{scene_idx}.off')
+scene_idx = '0243'  # can go from 0000 up to 0054
+scene, _, _ = burg.Scene.from_yaml(os.path.join(DATA_DIR, f'{scene_idx}/scene.yaml'), lib)
+print(scene)
 
-input_pc = o3d.io.read_point_cloud(ply_input)
-output_mesh = o3d.io.read_triangle_mesh(off_output)
-
-burg.visualization.show_geometries([input_pc])
-burg.visualization.show_geometries([output_mesh])
+burg.visualization.show_geometries([scene])
