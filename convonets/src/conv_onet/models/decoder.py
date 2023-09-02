@@ -56,8 +56,8 @@ class LocalDecoder(nn.Module):
         return c
 
     def sample_grid_feature(self, p, c):
-        print(p.shape)
-        print(c.shape)
+        print('p.shape: ',p.shape)
+        print('c.shape: ',c.shape)
         p_nor = normalize_3d_coordinate(p.clone(), padding=self.padding) # normalize to the range of (0, 1)
         p_nor = p_nor[:, :, None, None].float()
         vgrid = 2.0 * p_nor - 1.0 # normalize to (-1, 1)
