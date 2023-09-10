@@ -1,0 +1,1 @@
+{"train/iteration": 7000, "train/epoch": 500, "train/loss": 43.75343322753906, "_timestamp": 1694197340.9250522, "_runtime": 8231.508935213089, "_step": 7499, "val/epoch": 500, "val/iteration": 7000, "val/sdf_iou": 0.8126298785209656, "val/sdf_l1_loss": 0.03639411646872759, "_wandb": {"runtime": 8230}}
