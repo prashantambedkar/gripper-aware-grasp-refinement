@@ -59,6 +59,7 @@ shutil.copyfile(args.config, os.path.join(out_dir, 'config.yaml'))
 # Dataset
 train_dataset = config.get_dataset('train', cfg)
 val_dataset = config.get_dataset('val', cfg, return_idx=True)
+test_dataset=config.get_dataset('test',cfg,return_idx=True)
 
 train_loader = torch.utils.data.DataLoader(
     train_dataset, batch_size=batch_size, num_workers=cfg['training']['n_workers'], shuffle=True,
@@ -67,6 +68,11 @@ train_loader = torch.utils.data.DataLoader(
 
 val_loader = torch.utils.data.DataLoader(
         val_dataset, batch_size=1, num_workers=cfg['training']['n_workers_val'], shuffle=False,
+    collate_fn=data.collate_remove_none,
+    worker_init_fn=data.worker_init_fn)
+
+test_loader = torch.utils.data.DataLoader(
+        test_dataset, batch_size=1, num_workers=cfg['training']['n_workers_val'], shuffle=False,
     collate_fn=data.collate_remove_none,
     worker_init_fn=data.worker_init_fn)
 
@@ -237,7 +243,36 @@ while epoch_it < max_epoch:
             print(f'found new best model at it {it} with val score {metric_val_best:.4f}')
             checkpoint_io.save('model_best.pt', epoch_it=epoch_it, it=it,
                                loss_val_best=metric_val_best, it_best=it_best)
+    #---------------------------------------------------------------------------------------------------------------------------------------
+    # Get Scores for testing Dataset
+    if validate_every > 0 and (epoch_it % validate_every) == 0:
+        eval_dict = trainer.evaluate(test_loader)
 
+        metric_test = eval_dict[model_selection_metric]
+        print(f'validation metrics ({model_selection_metric} used to determine model_best.pt)')
+        for key, val in eval_dict.items():
+            print(f'\t{key:17s} {val:.5f}')
+        print(f'last best model was at it {it_best} with val score {metric_val_best}')
+
+        log_dict = {'val/epoch': epoch_it, 'val/iteration': it}
+        for k, v in eval_dict.items():
+            logger.add_scalar('val/%s' % k, v, it)
+            log_dict[f'val/{k}'] = v
+
+        if hasWandB:
+            wandb.log(log_dict)
+
+        if model_selection_sign * (metric_test - metric_val_best) > 0:
+            metric_val_best = metric_test
+            it_best = it
+            print(f'found new best model at it {it} with test score {metric_val_best:.4f}')
+            checkpoint_io.save('model_best.pt', epoch_it=epoch_it, it=it,
+                               loss_val_best=metric_val_best, it_best=it_best)
+            # Open the file in the specified mode
+            with open('3grid_partialpc_sdf_logs_with_single_view_pt9.txt', 'w') as file:
+                # Write the data to the file
+                file.write(data)
+    #---------------------------------------------------------------------------------------------------------------------------------------
     # Exit if necessary
     if exit_after > 0 and (time.time() - t0) >= exit_after:
         print('Time limit reached. Exiting.')
