@@ -1,0 +1,152 @@
+wandb_version: 1
+
+method:
+  desc: null
+  value: conv_sdfnet
+data:
+  desc: null
+  value:
+    dataset: Shapes3D
+    path: data/gag-refine/
+    watertight_path: data/watertight
+    classes:
+    - scenes
+    input_type: pointcloud
+    train_split: train
+    val_split: val
+    test_split: test
+    dim: 3
+    points_file: points_iou.npz
+    points_iou_file: points_iou.npz
+    multi_files: null
+    points_subsample:
+    - 1024
+    - 1024
+    points_unpackbits: true
+    model_file: model.off
+    watertight_file: model_watertight.off
+    img_folder: img
+    img_size: 224
+    img_with_camera: false
+    img_augment: false
+    n_views: 24
+    pointcloud_file: partial_point_cloud/partial_point_cloud_09.npz
+    pointcloud_chamfer_file: full_point_cloud.npz
+    pointcloud_n: 10000
+    pointcloud_target_n: 1024
+    pointcloud_noise: 0.0005
+    voxels_file: null
+    padding: 0.08
+    clamp_sdf: 0.05
+    clamp_margin_sdf: 0
+    sample_grasps: 2048
+    clamp_fc: 0.01
+    clamp_margin_fc: 0
+    contact_noise: 0.001
+    n_fingers:
+    - 2
+model:
+  desc: null
+  value:
+    decoder: simple_local
+    encoder: pointnet_local_pool
+    decoder_kwargs:
+      sample_mode: bilinear
+      hidden_size: 32
+    encoder_kwargs:
+      hidden_dim: 32
+      plane_type: grid
+      grid_resolution: 64
+      unet3d: true
+      unet3d_kwargs:
+        num_levels: 4
+        f_maps: 32
+        in_channels: 32
+        out_channels: 32
+    multi_gpu: false
+    c_dim: 32
+    grasp_quality_net: null
+    grasp_quality_net_kwargs:
+      hidden_size: 64
+      sample_mode: bilinear
+      n_blocks: 5
+      pooling: max
+training:
+  desc: null
+  value:
+    out_dir: out/gag_3grid_partialpc_sdf_viewPt09_viewPt09
+    batch_size: 32
+    print_every: 10
+    epochs: 500
+    lr_sched: true
+    visualize_every: 10
+    checkpoint_every: 1
+    validate_every: 1
+    backup_every: 20
+    eval_sample: false
+    model_selection_metric: sdf_iou
+    model_selection_mode: maximize
+    n_workers: 8
+    n_workers_val: 4
+test:
+  desc: null
+  value:
+    threshold: 0.5
+    eval_mesh: true
+    eval_pointcloud: false
+    remove_wall: true
+    model_file: model_best.pt
+generation:
+  desc: null
+  value:
+    batch_size: 100000
+    refinement_step: 0
+    vis_n_outputs: 2
+    generate_mesh: true
+    generate_pointcloud: true
+    generation_dir: generation
+    use_sampling: false
+    resolution_0: 32
+    upsampling_steps: 2
+    simplify_nfaces: null
+    copy_groundtruth: false
+    copy_input: true
+    latent_number: 4
+    latent_H: 8
+    latent_W: 8
+    latent_ny: 2
+    latent_nx: 2
+    latent_repeat: true
+    sliding_window: false
+    refine: false
+    n_x: 128
+    n_z: 1
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.15.10
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1694886536.832419
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 53
+      - 55
+      2:
+      - 1
+      - 5
+      - 41
+      - 53
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.10.12
+      5: 0.15.10
+      8:
+      - 5
