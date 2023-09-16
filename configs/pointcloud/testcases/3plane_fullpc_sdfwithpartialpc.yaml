@@ -30,6 +30,7 @@ model:
     unet_kwargs:
       depth: 5
       merge_mode: concat
+
       start_filts: 32
   decoder: simple_local
   decoder_kwargs:
