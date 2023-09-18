@@ -8,9 +8,9 @@ data:
   points_subsample: [1024, 1024]  # will balance points within and outside the volumes (out, in)
   points_file: points_iou.npz
   points_iou_file: points_iou.npz
-  pointcloud_file: partial_point_cloud/partial_point_cloud_09.npz
+  pointcloud_file: partial_point_cloud
   pointcloud_chamfer_file: full_point_cloud.npz
-  multi_files: null
+  multi_files: 17
   voxels_file: null
   padding: 0.08
   clamp_sdf: 0.05  # [m], clamp the sdf values at this threshold (applies to the real scene as they are not transformed)
@@ -43,7 +43,7 @@ model:
     n_blocks: 5
     pooling: max  # max | avg
 training:
-  out_dir: out/gag_3plane_partialpc_sdf_viewPt09
+  out_dir: out/gag_3plane_partialpc_sdf
   batch_size: 16
   lr_sched: true
   epochs: 500
