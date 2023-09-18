@@ -10,7 +10,7 @@ data:
   points_iou_file: points_iou.npz
   pointcloud_file: partial_point_cloud/partial_point_cloud_09.npz
   pointcloud_chamfer_file: full_point_cloud.npz
-  multi_files: 17
+  multi_files: null
   voxels_file: null
   padding: 0.08
   clamp_sdf: 0.05  # [m], clamp the sdf values at this threshold (applies to the real scene as they are not transformed)
