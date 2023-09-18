@@ -8,7 +8,7 @@ data:
   points_subsample: [1024, 1024]  # will balance points within and outside the volumes (out, in)
   points_file: points_iou.npz
   points_iou_file: points_iou.npz
-  pointcloud_file: partial_point_cloud
+  pointcloud_file: partial_point_cloud/partial_point_cloud_09.npz
   pointcloud_chamfer_file: full_point_cloud.npz
   multi_files: 17
   voxels_file: null
