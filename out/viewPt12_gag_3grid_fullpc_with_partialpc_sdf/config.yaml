@@ -16,7 +16,7 @@ data:
   clamp_sdf: 0.05  # [m], clamp the sdf values at this threshold (applies to the real scene as they are not transformed)
   clamp_margin_sdf: 0  # will auto-rescale [-clamp_sdf-margin, clamp_sdf+margin] to [-1, 1], set None if undesired
   sample_grasps: 2048  # will be auto-balanced between objects and grasp qualities
-  clamp_fc: 0.01  # clamping the ferrari canny score of the grasps, null if no clamping desired
+  clamp_fc: 0.01  # clamping the  ferrari canny score of the grasps, null if no clamping desired
   clamp_margin_fc: 0
   contact_noise: 0.001  # sigma in [m]
   n_fingers: [2]  # must be list

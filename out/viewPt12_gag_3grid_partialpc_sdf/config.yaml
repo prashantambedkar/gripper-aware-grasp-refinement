@@ -58,7 +58,7 @@ training:
   n_workers: 8
   n_workers_val: 4
 test:
-  threshold: 0.5  # should be 0.5 for SDF, corresponds to surface at sdf_value==0
+  threshold: 0.5  # should be 0.5 for SDF,  corresponds to surface at sdf_value==0
   eval_mesh: true
   eval_pointcloud: false
   remove_wall: true
