@@ -271,7 +271,7 @@ while epoch_it < max_epoch:
             # Open the file in the specified mode
             with open('3grid_partialpc_sdf_logs_with_single_view_pt9.txt', 'w') as file:
                 # Write the data to the file
-                file.write(data)
+                file.write(f'found new best model at it {it} with test score {metric_val_best:.4f}')
     #---------------------------------------------------------------------------------------------------------------------------------------
     # Exit if necessary
     if exit_after > 0 and (time.time() - t0) >= exit_after:
