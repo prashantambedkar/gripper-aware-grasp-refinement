@@ -44,7 +44,7 @@ model:
     n_blocks: 5
     pooling: max  # max | avg
 training:
-  out_dir: out/viewPt12_gag_3grid_partialpc_sdf
+  out_dir: out/viewPt12_gag_3plane_full_with_partialpc_sdf
   batch_size: 32
   lr_sched: true
   epochs: 500
