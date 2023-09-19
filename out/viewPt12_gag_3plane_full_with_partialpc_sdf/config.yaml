@@ -13,7 +13,7 @@ data:
   multi_files: 17
   voxels_file: null
   padding: 0.08
-  clamp_sdf: 0.05  # [m], clamp the sdf values at this threshold (applies to the real scene as they are not transformed)
+  clamp_sdf: 0.05  # [m], clamp the  sdf values at this threshold (applies to the real scene as they are not transformed)
   clamp_margin_sdf: 0  # will auto-rescale [-clamp_sdf-margin, clamp_sdf+margin] to [-1, 1], set None if undesired
   sample_grasps: 2048  # will be auto-balanced between objects and grasp qualities
   clamp_fc: 0.01  # clamping the ferrari canny score of the grasps, null if no clamping desired
