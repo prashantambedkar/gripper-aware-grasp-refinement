@@ -248,30 +248,30 @@ while epoch_it < max_epoch:
     if validate_every > 0 and (epoch_it % validate_every) == 0:
         eval_dict = trainer.evaluate(test_loader)
 
-        metric_test = eval_dict[model_selection_metric]
-        print(f'validation metrics ({model_selection_metric} used to determine model_best.pt)')
-        for key, val in eval_dict.items():
-            print(f'\t{key:17s} {val:.5f}')
-        print(f'last best model was at it {it_best} with val score {metric_val_best}')
-
-        log_dict = {'val/epoch': epoch_it, 'val/iteration': it}
-        for k, v in eval_dict.items():
-            logger.add_scalar('val/%s' % k, v, it)
-            log_dict[f'val/{k}'] = v
-
-        if hasWandB:
-            wandb.log(log_dict)
-
-        if model_selection_sign * (metric_test - metric_val_best) > 0:
-            metric_val_best = metric_test
-            it_best = it
-            print(f'found new best model at it {it} with test score {metric_val_best:.4f}')
-            checkpoint_io.save('model_best.pt', epoch_it=epoch_it, it=it,
-                               loss_val_best=metric_val_best, it_best=it_best)
-            # Open the file in the specified mode
-            with open('3grid_partialpc_sdf_logs_with_single_view_pt9.txt', 'w') as file:
-                # Write the data to the file
-                file.write(f'found new best model at it {it} with test score {metric_val_best:.4f}')
+        # metric_test = eval_dict[model_selection_metric]
+        # print(f'validation metrics ({model_selection_metric} used to determine model_best.pt)')
+        # for key, val in eval_dict.items():
+        #     print(f'\t{key:17s} {val:.5f}')
+        # print(f'last best model was at it {it_best} with val score {metric_val_best}')
+        #
+        # log_dict = {'val/epoch': epoch_it, 'val/iteration': it}
+        # for k, v in eval_dict.items():
+        #     logger.add_scalar('val/%s' % k, v, it)
+        #     log_dict[f'val/{k}'] = v
+        #
+        # if hasWandB:
+        #     wandb.log(log_dict)
+        #
+        # if model_selection_sign * (metric_test - metric_val_best) > 0:
+        #     metric_val_best = metric_test
+        #     it_best = it
+        #     print(f'found new best model at it {it} with test score {metric_val_best:.4f}')
+        #     checkpoint_io.save('model_best.pt', epoch_it=epoch_it, it=it,
+        #                        loss_val_best=metric_val_best, it_best=it_best)
+        # Open the file in the specified mode
+        with open('3grid_fullpc.txt', 'w') as file:
+            # Write the data to the file
+            file.write(f'found new best model at it {it} with test score {eval_dict:.4f}')
     #---------------------------------------------------------------------------------------------------------------------------------------
     # Exit if necessary
     if exit_after > 0 and (time.time() - t0) >= exit_after:
