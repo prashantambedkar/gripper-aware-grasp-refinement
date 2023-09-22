@@ -269,9 +269,10 @@ while epoch_it < max_epoch:
         #     checkpoint_io.save('model_best.pt', epoch_it=epoch_it, it=it,
         #                        loss_val_best=metric_val_best, it_best=it_best)
         # Open the file in the specified mode
-        with open('3grid_fullpc.txt', 'w') as file:
-            # Write the data to the file
-            file.write(f'found new best model at it {it} with test score {eval_dict:.4f}')
+        print(f'eval_dict:{eval_dict}')
+        # with open('3grid_fullpc.txt', 'w') as file:
+        #     # Write the data to the file
+        #     file.write(f'found new best model at it {it} with test score {eval_dict:.4f}')
     #---------------------------------------------------------------------------------------------------------------------------------------
     # Exit if necessary
     if exit_after > 0 and (time.time() - t0) >= exit_after:
