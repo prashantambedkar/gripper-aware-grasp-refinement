@@ -1,0 +1,71 @@
+method: conv_sdfnet
+data:
+  input_type: pointcloud
+  classes: ['scenes']  # this is the only folder anyway
+  path: data/gag-refine/   # next sub-folder is 'scenes', which is the class
+  pointcloud_n: 10000
+  pointcloud_noise: 0.0005  # it will be applied after scaling, i.e. it's not actual [m] but [m]/0.297
+  points_subsample: [1024, 1024]  # will balance points within and outside the volumes (out, in)
+  points_file: points_iou.npz
+  points_iou_file: points_iou.npz
+  pointcloud_file: partial_point_cloud/partial_point_cloud_12.npz
+  pointcloud_chamfer_file: full_point_cloud.npz
+  multi_files: null
+  voxels_file: null
+  padding: 0.08
+  clamp_sdf: 0.05  # [m], clamp the sdf values at this threshold (applies to the real scene as they are not transformed)
+  clamp_margin_sdf: 0  # will auto-rescale [-clamp_sdf-margin, clamp_sdf+margin] to [-1, 1], set None if undesired
+  sample_grasps: 2048  # will be auto-balanced between objects and grasp qualities
+  clamp_fc: 0.01  # clamping the ferrari canny score of the grasps, null if no clamping desired
+  clamp_margin_fc: 0
+  contact_noise: 0.001  # sigma in [m]
+  n_fingers: [2]  # must be list
+model:
+  encoder: pointnet_local_pool
+  encoder_kwargs:
+    hidden_dim: 32
+    plane_type: 'grid'
+    grid_resolution: 64
+    unet3d: True
+    unet3d_kwargs:
+      num_levels: 4
+      f_maps: 32
+      in_channels: 32
+      out_channels: 32
+  decoder: simple_local
+  decoder_kwargs:
+    sample_mode: bilinear  # bilinear / nearest
+    hidden_size: 32
+  c_dim: 32
+  grasp_quality_net: null  # simple_gqe or null if you don't want to train grasp quality net
+  grasp_quality_net_kwargs:
+    hidden_size: 64
+    sample_mode: bilinear  # bilinear / nearest
+    n_blocks: 5
+    pooling: max  # max | avg
+training:
+  out_dir: out/differentscene_sameviewpoint_12/gag_3grid_fullpc_with_partialpc_sdf
+  batch_size: 32
+  lr_sched: true
+  epochs: 500
+  model_selection_metric: sdf_iou  # todo: should we use sth else here, which also takes into account grasps?
+  model_selection_mode: maximize
+  print_every: 10
+  visualize_every: 10
+  validate_every: 1
+  checkpoint_every: 1
+  backup_every: 20
+  n_workers: 8
+  n_workers_val: 4
+test:
+  threshold: 0.5  # should be 0.5 for SDF, corresponds to surface at sdf_value==0
+  eval_mesh: true
+  eval_pointcloud: false
+  remove_wall: true
+  model_file: model_best.pt
+generation:
+  vis_n_outputs: 2
+  refine: false
+  n_x: 128
+  n_z: 1
+  generation_dir: generation
